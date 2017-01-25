@@ -1,0 +1,1146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://dublincore.org/documents/2008/08/04/dc-html/">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="robots" content="index,follow" />
+    <meta name="creator" content="rfcmarkup version 1.120" />
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+<meta name="DC.Identifier" content="urn:ietf:id:irtf-cfrg-kdf-uses" />
+<meta name="DC.Description.Abstract" content="This note surveys the existing designs for Key Derivation Functions
+(KDFs), the purposes for which they are used, and their security and
+usability goals. Importantly, some important protocols use KDFs for
+multiple purposes. We offer conclusions to guide future standards work
+and research on KDFs." />
+<meta name="DC.Creator" content="McGrew, David" />
+<meta name="DC.Creator" content="Weis, Brian" />
+<meta name="DC.Date.Issued" content="2010-02-26" />
+<meta name="DC.Title" content="Key Derivation Functions and their Uses" />
+
+    <link rel="icon" href="/images/id.png" type="image/png" />
+    <link rel="shortcut icon" href="/images/id.png" type="image/png" />
+    <title>draft-irtf-cfrg-kdf-uses-00 - Key Derivation Functions and their Uses</title>
+    
+    
+    <style type="text/css">
+	@media only screen 
+	  and (min-width: 992px)
+	  and (max-width: 1199px) {
+	    body { font-size: 14pt; }
+            div.content { width: 96ex; margin: 0 auto; }
+        }
+	@media only screen 
+	  and (min-width: 768px)
+	  and (max-width: 991px) {
+            body { font-size: 14pt; }
+            div.content { width: 96ex; margin: 0 auto; }
+        }
+	@media only screen 
+	  and (min-width: 480px)
+	  and (max-width: 767px) {
+            body { font-size: 11pt; }
+            div.content { width: 96ex; margin: 0 auto; }
+        }
+	@media only screen 
+	  and (max-width: 479px) {
+            body { font-size: 8pt; }
+            div.content { width: 96ex; margin: 0 auto; }
+        }
+	@media only screen 
+	  and (min-device-width : 375px) 
+	  and (max-device-width : 667px) {
+            body { font-size: 9.5pt; }
+            div.content { width: 96ex; margin: 0 1px; }
+        }
+	@media only screen 
+	  and (min-device-width: 1200px) {
+            body { font-size: 10pt; margin: 0 4em; }
+            div.content { width: 96ex; margin: 0; }
+        }
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	    font-weight: bold;
+            line-height: 0pt;
+            display: inline;
+            white-space: pre;
+            font-family: monospace;
+            font-size: 1em;
+	    font-weight: bold;
+        }
+        pre {
+            font-size: 1em;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+	.pre {
+	    white-space: pre;
+	    font-family: monospace;
+	}
+	.header{
+	    font-weight: bold;
+	}
+        .newpage {
+            page-break-before: always;
+        }
+        .invisible {
+            text-decoration: none;
+            color: white;
+        }
+        a.selflink {
+          color: black;
+          text-decoration: none;
+        }
+        @media print {
+            body {
+                font-family: monospace;
+                font-size: 10.5pt;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-size: 1em;
+            }
+        
+            a:link, a:visited {
+                color: inherit;
+                text-decoration: none;
+            }
+            .noprint {
+                display: none;
+            }
+        }
+	@media screen {
+	    .grey, .grey a:link, .grey a:visited {
+		color: #777;
+	    }
+            .docinfo {
+                background-color: #EEE;
+            }
+            .top {
+                border-top: 7px solid #EEE;
+            }
+            .bgwhite  { background-color: white; }
+            .bgred    { background-color: #F44; }
+            .bggrey   { background-color: #666; }
+            .bgbrown  { background-color: #840; }            
+            .bgorange { background-color: #FA0; }
+            .bgyellow { background-color: #EE0; }
+            .bgmagenta{ background-color: #F4F; }
+            .bgblue   { background-color: #66F; }
+            .bgcyan   { background-color: #4DD; }
+            .bggreen  { background-color: #4F4; }
+
+            .legend   { font-size: 90%; }
+            .cplate   { font-size: 70%; border: solid grey 1px; }
+	}
+    </style>
+    <!--[if IE]>
+    <style>
+    body {
+       font-size: 13px;
+       margin: 10px 10px;
+    }
+    </style>
+    <![endif]-->
+
+    <script type="text/javascript"><!--
+    function addHeaderTags() {
+	var spans = document.getElementsByTagName("span");
+	for (var i=0; i < spans.length; i++) {
+	    var elem = spans[i];
+	    if (elem) {
+		var level = elem.getAttribute("class");
+                if (level == "h1" || level == "h2" || level == "h3" || level == "h4" || level == "h5" || level == "h6") {
+                    elem.innerHTML = "<"+level+">"+elem.innerHTML+"</"+level+">";		
+                }
+	    }
+	}
+    }
+    var legend_html = "Colour legend:<br />      <table>         <tr><td>Unknown:</td>                   <td><span class='cplate bgwhite'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Draft:</td>                     <td><span class='cplate bgred'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Informational:</td>             <td><span class='cplate bgorange'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Experimental:</td>              <td><span class='cplate bgyellow'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Best Common Practice:</td>      <td><span class='cplate bgmagenta'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Proposed Standard:</td>         <td><span class='cplate bgblue'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Draft Standard (old designation):</td> <td><span class='cplate bgcyan'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Internet Standard:</td>         <td><span class='cplate bggreen'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Historic:</td>                  <td><span class='cplate bggrey'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>         <tr><td>Obsolete:</td>                  <td><span class='cplate bgbrown'>&nbsp;&nbsp;&nbsp;&nbsp;</span></td></tr>     </table>";
+    function showElem(id) {
+        var elem = document.getElementById(id);
+        elem.innerHTML = eval(id+"_html");
+        elem.style.visibility='visible';
+    }
+    function hideElem(id) {
+        var elem = document.getElementById(id);
+        elem.style.visibility='hidden';        
+        elem.innerHTML = "";
+    }
+    // -->
+    </script>
+</head>
+<body onload="addHeaderTags()">
+  <div class="content">
+   <div style="height: 13px;">
+      <div onmouseover="this.style.cursor='pointer';"
+         onclick="showElem('legend');"
+         onmouseout="hideElem('legend')"
+	 style="height: 6px; position: absolute;"
+         class="pre noprint docinfo bgred"
+         title="Click for colour legend." >                                                                        </div>
+      <div id="legend"
+           class="docinfo noprint pre legend"
+           style="position:absolute; top: 4px; left: 4ex; visibility:hidden; background-color: white; padding: 4px 9px 5px 7px; border: solid #345 1px; "
+           onmouseover="showElem('legend');"
+           onmouseout="hideElem('legend');">
+      </div>
+   </div>
+<span class="pre noprint docinfo top">[<a href="../html/" title="Document search and retrieval page">Docs</a>] [<a href="https://tools.ietf.org/id/draft-irtf-cfrg-kdf-uses-00.txt" title="Plaintext version of this document">txt</a>|<a href="/pdf/draft-irtf-cfrg-kdf-uses-00.txt" title="PDF version of this document">pdf</a>] [<a href='https://datatracker.ietf.org/doc/draft-irtf-cfrg-kdf-uses' title='IESG Datatracker information for this document'>Tracker</a>] [<a href="../wg/cfrg" title="The working group handling this document">WG</a>] [<a href="mailto:draft-irtf-cfrg-kdf-uses@tools.ietf.org?subject=draft-irtf-cfrg-kdf-uses%20" title="Send email to the document authors">Email</a>] [<a href="/idnits?url=https://tools.ietf.org/id/draft-irtf-cfrg-kdf-uses-00.txt" title="Run an idnits check of this document">Nits</a>]                          </span><br />
+<span class="pre noprint docinfo">                                                                        </span><br />
+<span class="pre noprint docinfo">Versions: <a href="./draft-irtf-cfrg-kdf-uses-00">00</a>                                                            </span><br />
+<span class="pre noprint docinfo">                                                                        </span><br />
+<pre>
+Network Working Group                                          D. McGrew
+Internet-Draft                                                   B. Weis
+Intended status: Standards Track                           Cisco Systems
+Expires: August 30, 2010                               February 26, 2010
+
+
+                <span class="h1">Key Derivation Functions and their Uses</span>
+                    <span class="h1">draft-irtf-cfrg-kdf-uses-00.txt</span>
+
+Abstract
+
+   This note surveys the existing designs for Key Derivation Functions
+   (KDFs), the purposes for which they are used, and their security and
+   usability goals.  Importantly, some important protocols use KDFs for
+   multiple purposes.  We offer conclusions to guide future standards
+   work and research on KDFs.
+
+Status of this Memo
+
+   This Internet-Draft is submitted to IETF in full conformance with the
+   provisions of <a href="./bcp78">BCP 78</a> and <a href="./bcp79">BCP 79</a>.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF), its areas, and its working groups.  Note that
+   other groups may also distribute working documents as Internet-
+   Drafts.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   The list of current Internet-Drafts can be accessed at
+   <a href="http://www.ietf.org/ietf/1id-abstracts.txt">http://www.ietf.org/ietf/1id-abstracts.txt</a>.
+
+   The list of Internet-Draft Shadow Directories can be accessed at
+   <a href="http://www.ietf.org/shadow.html">http://www.ietf.org/shadow.html</a>.
+
+   This Internet-Draft will expire on August 30, 2010.
+
+Copyright Notice
+
+   Copyright (c) 2010 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to <a href="./bcp78">BCP 78</a> and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (<a href="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</a>) in effect on the date of
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 1]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-2" id="page-2" href="#page-2" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the BSD License.
+
+
+Table of Contents
+
+   <a href="#section-1">1</a>.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-3">3</a>
+     <a href="#section-1.1">1.1</a>.  Conventions Used In This Document  . . . . . . . . . . . .  <a href="#page-3">3</a>
+   <a href="#section-2">2</a>.  Purposes of Key Derivation Functions . . . . . . . . . . . . .  <a href="#page-3">3</a>
+     <a href="#section-2.1">2.1</a>.  Inputs . . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-4">4</a>
+     <a href="#section-2.2">2.2</a>.  Design Goals for KDFs  . . . . . . . . . . . . . . . . . .  <a href="#page-5">5</a>
+   <a href="#section-3">3</a>.  Protocol Independent KDFs  . . . . . . . . . . . . . . . . . .  <a href="#page-5">5</a>
+     <a href="#section-3.1">3.1</a>.  HKDF . . . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-5">5</a>
+     <a href="#section-3.2">3.2</a>.  NIST SP 800-108  . . . . . . . . . . . . . . . . . . . . .  <a href="#page-5">5</a>
+     <a href="#section-3.3">3.3</a>.  NIST SP 800-90 . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-6">6</a>
+     <a href="#section-3.4">3.4</a>.  PKCS #5  . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-6">6</a>
+   <a href="#section-4">4</a>.  Protocol Specific KDFs . . . . . . . . . . . . . . . . . . . .  <a href="#page-6">6</a>
+     <a href="#section-4.1">4.1</a>.  NIST SP 800-56A  . . . . . . . . . . . . . . . . . . . . .  <a href="#page-6">6</a>
+     <a href="#section-4.2">4.2</a>.  ANSI X9.42 . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-7">7</a>
+     <a href="#section-4.3">4.3</a>.  ANSI X9.63 . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-7">7</a>
+     <a href="#section-4.4">4.4</a>.  IEEE 1363-2000 . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-7">7</a>
+     <a href="#section-4.5">4.5</a>.  IEEE 1363a-2004  . . . . . . . . . . . . . . . . . . . . .  <a href="#page-7">7</a>
+     <a href="#section-4.6">4.6</a>.  ISO-18033-2  . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-8">8</a>
+     <a href="#section-4.7">4.7</a>.  TLS Version 1.2  . . . . . . . . . . . . . . . . . . . . .  <a href="#page-8">8</a>
+     <a href="#section-4.8">4.8</a>.  TLS Version 1.1  . . . . . . . . . . . . . . . . . . . . .  <a href="#page-9">9</a>
+     <a href="#section-4.9">4.9</a>.  IKEv1  . . . . . . . . . . . . . . . . . . . . . . . . . .  <a href="#page-9">9</a>
+     <a href="#section-4.10">4.10</a>. IKEv2: HMAC  . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-10">10</a>
+     <a href="#section-4.11">4.11</a>. IKEv2: CMAC  . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-10">10</a>
+     <a href="#section-4.12">4.12</a>. SSH  . . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-11">11</a>
+     <a href="#section-4.13">4.13</a>. SRTP . . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-11">11</a>
+     <a href="#section-4.14">4.14</a>. S/MIME DH  . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-12">12</a>
+     <a href="#section-4.15">4.15</a>. CMS  . . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-12">12</a>
+     <a href="#section-4.16">4.16</a>. S/MIME . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-12">12</a>
+     <a href="#section-4.17">4.17</a>. Kerberos . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-12">12</a>
+     <a href="#section-4.18">4.18</a>. OpenPGP  . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-12">12</a>
+   <a href="#section-5">5</a>.  Conclusions  . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-13">13</a>
+     <a href="#section-5.1">5.1</a>.  Future Work  . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-13">13</a>
+   <a href="#section-6">6</a>.  Security Considerations  . . . . . . . . . . . . . . . . . . . <a href="#page-14">14</a>
+   <a href="#section-7">7</a>.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . <a href="#page-14">14</a>
+   <a href="#section-8">8</a>.  References . . . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-15">15</a>
+     <a href="#section-8.1">8.1</a>.  Normative References . . . . . . . . . . . . . . . . . . . <a href="#page-15">15</a>
+     <a href="#section-8.2">8.2</a>.  Informative References . . . . . . . . . . . . . . . . . . <a href="#page-15">15</a>
+   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . <a href="#page-17">17</a>
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 2]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-3" id="page-3" href="#page-3" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+<span class="h2"><a class="selflink" name="section-1" href="#section-1">1</a>.  Introduction</span>
+
+   This section provides background and terminology.
+
+   There are many different KDF designs being utilized in the Internet
+   community and beyond.  Most of these designs appear in the
+   specification of a protocol or application, and their use is intended
+   only for that particular protocol or application.  These protocol-
+   specific KDFs are cataloged in <a href="#section-4">Section 4</a>.  There are also some KDFs
+   that are intended for use in multiple applications or protocols; we
+   catalog these protocol-independent KDFs in <a href="#section-3">Section 3</a>.  There are
+   different purposes for which KDFs are used, each with its own
+   distinct security goals.  We summarize these purposes in <a href="#section-2">Section 2</a>.
+   We take a broad view of what functions can be regarded as KDFs.
+
+   Some KDFs use a two-stage process.  The first stage is called
+   "extraction" and it takes a variable-length input that is random or
+   pseudorandom, but which may not be uniformly distributed.  The second
+   stage is called "expansion", and it takes the fixed-length output of
+   the extraction stage and generates a variable-length pseudorandom
+   output.
+
+   An extraction stage can be based on a computational assumption (such
+   as the inability of a computationally limited attacker to find
+   preimages of a certain function, for instance).  This case is called
+   a computational extractor.  Alternatively, an extraction stage can
+   rely on demonstrable statistical properties of some function (as done
+   with universal hashing, for example).  This case is called a
+   statistical extractor.
+
+   KDF terminology is non-uniform; they are sometimes called pseudo-
+   random functions (PRFs).
+
+   This note is motivated in part by interesting recent work on general-
+   purpose KDFs [<a href="#ref-I-D.krawczyk-hkdf">I-D.krawczyk-hkdf</a>].
+
+<span class="h3"><a class="selflink" name="section-1.1" href="#section-1.1">1.1</a>.  Conventions Used In This Document</span>
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [<a href="./rfc2119" title="&quot;Key words for use in RFCs to Indicate Requirement Levels&quot;">RFC2119</a>].
+
+
+<span class="h2"><a class="selflink" name="section-2" href="#section-2">2</a>.  Purposes of Key Derivation Functions</span>
+
+   The purposes for which KDFs are used can be categorized as follows.
+   KDFs are used to:
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 3]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-4" id="page-4" href="#page-4" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   1.  Generate one or more keys from a (uniformly random or
+       pseudorandom) seed value.  In this case, no extraction stage is
+       needed.  This use requires that the key provided as input is
+       *uniformly* random or pseudorandom; it is not sufficient that the
+       seed is unpredictable.
+
+   2.  Generate one or more keys from a Diffie-Hellman shared secret.
+       An extraction stage is needed, because the DH shared secret is
+       not uniformly distributed.
+
+   3.  Generate key material from a non-uniform random source.  In this
+       case, an extraction stage is needed.
+
+   4.  Generate a key from a passphrase.  An extraction stage is needed.
+
+   In use case #2, computational extraction seems to be needed, because
+   statistical extraction would be inefficient.  In use case #3, either
+   statistical or computational extraction could be used.
+
+   KDFs designed for use case #4 usually have additional properties.
+   Some functions dedicated to this purpose are designed to be
+   computationally intensive in order to increase the cost of exhaustive
+   password searching.
+
+   It is easy to design a KDF suitable for use #1, because the use case
+   matches that of a pseudorandom function.  It is much trickier to
+   design a function suitable for #2 or #3.  There has been a good deal
+   of theoretical work in this area, and it is now possible to cite some
+   provable security results, though many of those methods are not
+   currently used in practice (and some methods may be too inefficient
+   to warrant use in practice).  It is open to question how much effort
+   should be exerted designing a function for use #4, considering that
+   any system that derives secret keys from passwords will be vulnerable
+   to dictionary attacks.
+
+<span class="h3"><a class="selflink" name="section-2.1" href="#section-2.1">2.1</a>.  Inputs</span>
+
+   The following inputs appear in some different KDF designs:
+
+      An unpredictable seed value.
+
+      The length of derived keying material.
+
+      A "salt" value that is different across different runs of the
+      protocol, but which may be public information.
+
+      An identifier indicating the use for which the derived keys are
+      intended.
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 4]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-5" id="page-5" href="#page-5" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+      An identifier indicating an entity associated with the seed value
+      and derived key.
+
+   Not all KDF designs have all of these inputs.
+
+<span class="h3"><a class="selflink" name="section-2.2" href="#section-2.2">2.2</a>.  Design Goals for KDFs</span>
+
+   The essential goal for a KDF is security; if used properly it must
+   meet its security goals.  Ideally, it should also be robust against
+   accidental misuse.
+
+   It is desirable that a KDF design be simple.  Complexity should be
+   avoided in the specification, implementation, and the interface to
+   the KDF.
+
+   It is desirable that a KDF be reusable, that is, that a KDF design
+   can be used across multiple applications.
+
+   A protocol or application that uses a KDF should be able to easily
+   replace the KDF that it uses; i.e. it should have KDF agility.  IKE
+   and TLS have this property to some extent.
+
+   It should be easy to validate a KDF implementation as being correct.
+   To this end, a KDF design should define test cases that can be used
+   in known-answer tests.
+
+
+<span class="h2"><a class="selflink" name="section-3" href="#section-3">3</a>.  Protocol Independent KDFs</span>
+
+   The following KDF definitions have been specified, and are used by
+   one or more of the networking standards documented later in this
+   memo.
+
+<span class="h3"><a class="selflink" name="section-3.1" href="#section-3.1">3.1</a>.  HKDF</span>
+
+   The HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
+   [<a href="#ref-I-D.krawczyk-hkdf">I-D.krawczyk-hkdf</a>] specifies a KDF with an optional extraction phase
+   followed by an expansion phase.  The combination of the extraction
+   and expansion steps of HKDF is intended for use cases #2 or #3 (or
+   even #4) whereas the expansion phase by itself is suitable for use
+   case #1.
+
+<span class="h3"><a class="selflink" name="section-3.2" href="#section-3.2">3.2</a>.  NIST SP 800-108</span>
+
+   The NIST Recommendation for Key Derivation Using Pseudorandom
+   Functions KDFs [<a href="#ref-SP800-108">SP800-108</a>] defines three KDFs (using counter mode,
+   feedback mode, and a double-pipeline iteration mode) all of which
+   assume an input of a uniform pseudorandom value, and which require
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 5]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-6" id="page-6" href="#page-6" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   identifiers for the key usage and optionally accept identifiers for
+   the entities associated with the keys.  They were developed
+   specifically for use case #1.  These functions use a cryptographic
+   hash function or a block cipher as an underlying primitive.
+
+<span class="h3"><a class="selflink" name="section-3.3" href="#section-3.3">3.3</a>.  NIST SP 800-90</span>
+
+   The NIST Recommendation for Random Number Generation Using
+   Deterministic Random Bit Generators (Revised) [<a href="#ref-SP800-90">SP800-90</a>] defines KDFs
+   intended for use case #3.  Of the inputs that we consider, these
+   functions accept only a seed value.  They have additional properties,
+   such as backtracking resistance.
+
+<span class="h3"><a class="selflink" name="section-3.4" href="#section-3.4">3.4</a>.  PKCS #5</span>
+
+   The first KDF described by PKCS #5: Password-Based Cryptography
+   Specification Version 2.0 [<a href="./rfc2898" title="&quot;PKCS #5: Password-Based Cryptography Specification Version 2.0&quot;">RFC2898</a>] is PBKDF.  It is a hash function
+   in OFB mode.  The second KDF described is PBKDF2, which is an HMAC
+   iterated KDF, with all of the iterates XORed together.  These
+   functions have the property that they can be computationally
+   expensive, in order to thwart dictionary attacks against keys derived
+   from user-generated passwords.
+
+   These KDFs were designed for use case #4, but is seen in other use
+   cases as well.
+
+   Notes:
+
+   o  Neither KDF defined in PKCS #5 matches either the NIST KDF
+      definitions or HKDF.  However, it should be noted that none of
+      these KDF definitions were intended to be used for a use case #4.
+
+
+<span class="h2"><a class="selflink" name="section-4" href="#section-4">4</a>.  Protocol Specific KDFs</span>
+
+   Many Internet and other network protocols have described one or more
+   particular KDFs as part of their specification.  This section
+   summarizes how the KDF was designed, and in which of the use cases
+   described in <a href="#section-2">Section 2</a> each KDF is deployed.  Particular attention is
+   paid as to whether the KDF meets the requirements of the
+   specifications in the previous section ([<a href="#ref-SP800-108">SP800-108</a>],
+   [<a href="#ref-I-D.krawczyk-hkdf">I-D.krawczyk-hkdf</a>], Section 3.4) or Section 5 of [<a href="#ref-SP800-56A">SP800-56A</a>].
+
+<span class="h3"><a class="selflink" name="section-4.1" href="#section-4.1">4.1</a>.  NIST SP 800-56A</span>
+
+   The NIST Recommendation for Pair-Wise Key Establishment Schemes Using
+   Discrete Logarithm Cryptography [<a href="#ref-SP800-108">SP800-108</a>] describes two counter
+   mode KDFs.  They are similar, but differ in that one is intended for
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 6]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-7" id="page-7" href="#page-7" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   use with ASN.1 encodings.  These KDFs take a Diffie-Hellman shared
+   secret as a seed input, and are intended for use case #2.  They
+   require as input identifiers for the key usage and identifiers for
+   the entities associated with the key establishment protocol.
+
+<span class="h3"><a class="selflink" name="section-4.2" href="#section-4.2">4.2</a>.  ANSI X9.42</span>
+
+   The ANSI Public Key Cryptography for the Financial Services Industry:
+   Agreement of Symmetric Keys Using Discrete Logarithm Cryptography
+   [<a href="#ref-X9.42" title="&quot;Public Key Cryptography for the Financial Services Industry: Agreement of Symmetric Keys Using Discrete Logarithm Cryptography&quot;">X9.42</a>] defines a hash function KDF.  It is intended for use cases #1
+   and #2.
+
+<span class="h3"><a class="selflink" name="section-4.3" href="#section-4.3">4.3</a>.  ANSI X9.63</span>
+
+   The ANSI Public Key Cryptography for the Financial Services Industry
+   Key Agreement and Key Transport Using Elliptic Curve Cryptography
+   [<a href="#ref-X9.63" title="&quot;Public Key Cryptography for the Financial Services Industry Key Agreement and Key Transport Using Elliptic Curve Cryptography&quot;">X9.63</a>] defines a hash function in counter mode.  It is intended for
+   use cases #1 and #2.
+
+<span class="h3"><a class="selflink" name="section-4.4" href="#section-4.4">4.4</a>.  IEEE 1363-2000</span>
+
+   The IEEE Standard Specifications for Public-Key Cryptography
+   [<a href="#ref-IEEE1363">IEEE1363</a>] defines KDF1, a key derivation function used with public
+   key key agreement schemes.  It describes a keyed hash of the DH
+   result and a string.  This is use case #2.
+
+   Notes:
+
+   o  KDF1 nearly matches SP 800-56A, but it does not include a counter
+      input.  The standard also does not clearly define how the key
+      derivation parameters associated with the session are determined.
+
+   o  The KDF1 specification says that it was derived from ANSI X9.42.
+
+   o  KDF1 does not match HKDF.  It does not include an Extract
+      function, but nearly matches the Expand function (again, the
+      absent counter input) as long as the output only requires one
+      iteration of the HKDF HMAC-Hash function.
+
+<span class="h3"><a class="selflink" name="section-4.5" href="#section-4.5">4.5</a>.  IEEE 1363a-2004</span>
+
+   Am amendment to IEEE 1363 [<a href="#ref-IEEE1363a">IEEE1363a</a>] adds a new KDF2 to the IEEE
+   1363 standard.  It describes a KDF that is a hash function in counter
+   mode.  This is use case #2.
+
+   Notes:
+
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 7]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-8" id="page-8" href="#page-8" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   o  KDF2 matches SP 800-56A (other than the ordinal position of the
+      counter differs).  However, the standard does not clearly define
+      how the key derivation parameters associated with the session are
+      determined.
+
+   o  The KDF2 specification says that it was derived from ANSI X9.42-
+      2001 and ANSI X9.63.
+
+   o  KDF2 does not match HKDF.  It does not include an Extract
+      function, and the Expand function is a counter mode KDF, not a
+      feedback mode KDF.
+
+<span class="h3"><a class="selflink" name="section-4.6" href="#section-4.6">4.6</a>.  ISO-18033-2</span>
+
+   The KDFs defined in Encryption algorithms -- Part 2: Asymmetric
+   ciphers [<a href="#ref-ISO-18033-2">ISO-18033-2</a>] are a more general version of those those in SP
+   800-56A; the latter specification mandates inputs that are not
+   present in the ISO-18033-2 specification.  The ISO-18033-2 KDFs are
+   intended to be used with a DH result as input, which make them
+   suitable for use case #2.
+
+<span class="h3"><a class="selflink" name="section-4.7" href="#section-4.7">4.7</a>.  TLS Version 1.2</span>
+
+   P_SHA256 is defined in <a href="#section-5">Section 5</a> of The Transport Layer Security
+   (TLS) Protocol, Version 1.2 [<a href="./rfc5246" title="&quot;The Transport Layer Security (TLS) Protocol Version 1.2&quot;">RFC5246</a>].  This KDF uses HMAC in output
+   feedback mode.  Two KDF computations are specified: deriving the
+   "master_secret" from the "pre_master_secret", followed by derivation
+   of session keys (the "key_block") from the "master_secret".  The KDF
+   is applied as both use cases #1 and #2, as follows:
+
+   o  Use case #1 occurs when the pre_master_secret is distributed by
+      the client (<a href="./rfc5246#section-8.1.1">Section&nbsp;8.1.1 of RFC 5246</a>).
+
+   o  Use case #2 occurs when the pre_master_secret is derived from
+      Diffie-Hellman (<a href="./rfc5246#section-8.1.2">Section&nbsp;8.1.2 of RFC 5246</a>).
+
+   o  Use case #1 occurs when the key_block is computed from the
+      master_secret (<a href="./rfc5246#section-6.3">Section&nbsp;6.3 of RFC 5246</a>).
+
+   Notes:
+
+   o  When P_SHA256 is used for a use case #1, it nearly matches the
+      "KDF in Feedback Mode" specified in SP 800-108.  It is missing
+      only the L ("length of the derived keying material") input.
+
+   o  The feedback construction of P_SHA256 does not conform to either
+      Concatenation Key Derivation Function defined in SP 800-56A. Also,
+      PSHA256 uses an HMAC construction whereas SP 800-56A describes a
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 8]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-9" id="page-9" href="#page-9" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+      keyed hash function.
+
+   o  When P_SHA256 is used for a use case #1, it nearly matches the
+      HKDF-Expand function, but is missing the counter input).
+
+   o  For use case #2, P-SHA256 does not conform to HKDF.  It specifies
+      an HMAC of the seed rather than a HKDF-Extract function, and omits
+      the counter input to HKDF-Expand.
+
+<span class="h3"><a class="selflink" name="section-4.8" href="#section-4.8">4.8</a>.  TLS Version 1.1</span>
+
+   This KDF is the result of P_MD5 XOR P_SHA1 (<a href="#section-5">Section 5</a> of The
+   Transport Layer Security (TLS) Protocol Version 1.1 [<a href="./rfc4346" title="&quot;The Transport Layer Security (TLS) Protocol Version 1.1&quot;">RFC4346</a>].
+
+   This KDF is an HMAC in an OFB mode variant.  An HMAC PRF is called
+   twice for each derivation: once with MD5 as the hash function and
+   once with SHA1 as the hash function.  The results of the two PRF
+   calls are XORed together and become the output of the KDF.  The KDF
+   is applied as both use cases #1 and #2, as described for TLS 1.2:
+
+   Notes:
+
+   o  The P_MD5 XOR P_SHA1 does not match either SP 800-108 or SP 800-
+      56A. The use of MD5 is strongly discouraged, in general, though
+      this use of MD5 is believed to provide adequate security.
+
+   o  The P_MD5 XOR P_SHA1 does not match HKDF.
+
+<span class="h3"><a class="selflink" name="section-4.9" href="#section-4.9">4.9</a>.  IKEv1</span>
+
+   The Internet Key Exchange (IKE) [<a href="./rfc2409" title="&quot;The Internet Key Exchange (IKE)&quot;">RFC2409</a>] defines a KDF, which it
+   calls a PRF.  The "HMAC version of the negotiated hash algorithm" is
+   used as the default KDF (<a href="./rfc2409#section-4">Section&nbsp;4 of RFC 2409</a>).  Hash algorithms
+   currently defined int the IANA IPsec Registry include SHA-1, SHA-256,
+   SHA-384, and SHA-512.  The KDF used to protect IKEv1 messages ("phase
+   1 prf") is composed of two serialized PRF operations, where the data
+   given to the PRF depends on the type of authentication used in the
+   IKEv1 exchange.  The KDF is applied as use case #1 or #2 depending on
+   the type of authentication.
+
+   IKEv1 also generates keying material for IPsec using a PRF, where the
+   keying material used with the PRF is the result of the phase 1 PRF.
+
+   Notes:
+
+   o  None of the KDFs match either SP 800-108 or SP 800-56A.
+
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010                [Page 9]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-10" id="page-10" href="#page-10" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   o  None of the KDFs match HKDF.
+
+<span class="h3"><a class="selflink" name="section-4.10" href="#section-4.10">4.10</a>.  IKEv2: HMAC</span>
+
+   The Internet Key Exchange (IKEv2) Protocol[RFC4306] defines a KDF,
+   which it calls PRF+ (<a href="./rfc4306#section-2.13">Section&nbsp;2.13 of RFC 4306</a>).  PRF+ uses a
+   negotiated hash algorithm.  In this section we consider negotiated
+   HMAC algorithms, which used creates a KDF that is an HMAC in an OFB
+   mode.  It is first used to extract the SKEYSEED from a shared Diffie-
+   Hellman result (use case #1).  The KDF is then used to create a set
+   of shared keys using SKEYSEED (use case #2).
+
+   Notes:
+
+   o  PRF+ strictly conforms to HKDF: deriving SKEYSEED matches the
+      HKDF-Extract step, and derivation of the shared keys matches the
+      HKDF-Expand step.
+
+   o  Deriving SKEYSEED does not conform to SP 800-56A: it specifies the
+      use of an HMAC (where nonces are used as the "key" input) rather
+      than a hash.  Also, the it is missing data inputs of a counter and
+      "other information".
+
+   o  Deriving the set of shared keys from SKEYSEED very nearly conforms
+      to SP 800-108 but the inputs are different: a counter is included
+      but concatenated after S, S is not necesarily a null terminated
+      string, and the ("length of the derived keying material") input is
+      missing.
+
+<span class="h3"><a class="selflink" name="section-4.11" href="#section-4.11">4.11</a>.  IKEv2: CMAC</span>
+
+   A CMAC hash function has been defined for IKEv2: The Advanced
+   Encryption Standard- Cipher-based Message Authentication Code-Pseudo-
+   Random Function-128 (AES-CMAC-PRF-128) [<a href="./rfc4615" title="&quot;The Advanced Encryption Standard-Cipher-based Message Authentication Code-Pseudo-Random Function-128 (AES-CMAC- PRF-128) Algorithm for the Internet Key Exchange Protocol (IKE)&quot;">RFC4615</a>].  This KDF can be
+   used as an alternative to the HMAC methods described in the previous
+   IKEv2 section; it is used identically.
+
+   This KDF uses AES with a fixed key, and offers no theoretical
+   justification for this practice.  This makes it vulnerable to a
+   related-key attack, making it unsuitable for general-purpose use.
+
+   Note:
+
+   o  Deriving SKEYSEED does not conform to SP 800-56A (as described in
+      the previous section).
+
+   o  Deriving the set of shared keys from SKEYSEED very nearly conforms
+      to SP 800-108 but the inputs are different (as described in the
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 10]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-11" id="page-11" href="#page-11" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+      previous section).
+
+   o  HKDF only supports the use of HMAC-based key derivation functions,
+      so AES-CMAC-PRF-128 does not conform to HKDF.
+
+<span class="h3"><a class="selflink" name="section-4.12" href="#section-4.12">4.12</a>.  SSH</span>
+
+   The Secure Shell (SSH) Transport Layer Protocol [<a href="./rfc4253" title="&quot;The Secure Shell (SSH) Transport Layer Protocol&quot;">RFC4253</a>] KDF is
+   defined in <a href="./rfc4253#section-7.2">Section&nbsp;7.2 of RFC 4253</a>.  The input keying material to the
+   KDF is a Diffie-Hellman result, which is use case #2.
+
+   Notes:
+
+   o  The SSH KDF does not conform to SP 800-56A. A hash function is
+      used to expand the DH result and it uses a counter beginning at
+      0x65, which are necessary components to conform.  However, the
+      ordinal positions of the counter inputs does not match SP 800-56A.
+      Also, the other inputs (H and session_id) do not match either SP
+      800-56A definition, although it can be noted that the session_id
+      argument was generated from identifiers unique to the two
+      communicating parties.
+
+<span class="h3"><a class="selflink" name="section-4.13" href="#section-4.13">4.13</a>.  SRTP</span>
+
+   The Secure Real-time Transport Protocol [<a href="./rfc3711" title="&quot;The Secure Real-time Transport Protocol (SRTP)&quot;">RFC3711</a>] defined AES-CM-PRF,
+   which construction is defined in <a href="#section-4.3">Section 4.3</a>.  This KDF uses AES in
+   counter (CTR) mode to produce keying material.
+
+   A counter mode PRF requires a uniformly random key, so without any
+   further processing must fall into use case #1.  Most key management
+   standards (e.g., <a href="./rfc4568">RFC 4568</a>) for SRTP do result in a uniformly random
+   secret key.
+
+   An emerging key management method for SRTP [<a href="#ref-I-D.ietf-avt-dtls-srtp">I-D.ietf-avt-dtls-srtp</a>]
+   uses the TLS KDF to provide a shared secret to SRTP.  In the cases
+   where the TLS shared secret is a secret key, use case #1 applies.
+   However, in the case of a Diffie-Hellman result being the source of
+   the TLS pre-master-secret, this would be considered a use case #2
+   (even though the master_secret used as source to the SRTP KDF is a
+   uniformly random key).
+
+   Notes:
+
+   o  The AES-CM-PRF KDF is based on a counter mode cipher, which does
+      not conform to SP 800-56A or SP 800-108, or HKDF.
+
+
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 11]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-12" id="page-12" href="#page-12" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+<span class="h3"><a class="selflink" name="section-4.14" href="#section-4.14">4.14</a>.  S/MIME DH</span>
+
+   The S/MIME Diffie-Hellman Key Agreement Method (<a href="./rfc2631">RFC 2631</a>) contains a
+   KDF in <a href="#section-2.1.2">Section 2.1.2</a>.  Two inputs are given to the SHA-1 hash
+   function: The DH result, and a set of "other information" specific to
+   the communicating parties encoded as ASN.1.  This is strictly a use
+   case #2.
+
+   Notes:
+
+   o  The KDF matches SP 800-56A Approved Alternative 2, with the
+      exception that the counter is included included in the "OtherInfo"
+      input rather than as an explicit argument to the hash function.
+
+   o  The KDF does not match the specification of HKDF.
+
+<span class="h3"><a class="selflink" name="section-4.15" href="#section-4.15">4.15</a>.  CMS</span>
+
+   The Cryptographic Message Syntax (CMS) Algorithms [<a href="./rfc3770" title="&quot;Certificate Extensions and Attributes Supporting Authentication in Point-to-Point Protocol (PPP) and Wireless Local Area Networks (WLAN)&quot;">RFC3770</a>] describes
+   the use of PBKDF2.  See <a href="#section-3.4">Section 3.4</a>.
+
+<span class="h3"><a class="selflink" name="section-4.16" href="#section-4.16">4.16</a>.  S/MIME</span>
+
+   The Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 3.2
+   Message Specification (<a href="./rfc5751">RFC 5751</a>) specifies the KDF in CMS [<a href="./rfc5754" title="&quot;Using SHA2 Algorithms with Cryptographic Message Syntax&quot;">RFC5754</a>].
+   See <a href="#section-3.4">Section 3.4</a>.
+
+<span class="h3"><a class="selflink" name="section-4.17" href="#section-4.17">4.17</a>.  Kerberos</span>
+
+   A Pseudo-Random Function (PRF) for the Kerberos V Generic Security
+   Service Application Program Interface (GSS-API) Mechanism [<a href="./rfc4402" title="&quot;A Pseudo-Random Function (PRF) for the Kerberos V Generic Security Service Application Program Interface (GSS-API) Mechanism&quot;">RFC4402</a>]
+   defines a KDF described as "PRF+".  It is a pseudorandom function in
+   counter mode, where the pseudorandom function is defined as part of a
+   cryptographic profile.  <a href="./rfc3962">RFC 3962</a> [<a href="./rfc3962" title="K.">RFC3962</a>] defines an AES profile
+   that defines its pseudorandom function as PBKDF2 with a HMAC SHA-1
+   hash.  See <a href="#section-3.4">Section 3.4</a>.
+
+<span class="h3"><a class="selflink" name="section-4.18" href="#section-4.18">4.18</a>.  OpenPGP</span>
+
+   String-to-Key (S2K) Function in "OpenPGP Message Format" [<a href="./rfc4880" title="&quot;OpenPGP Message Format&quot;">RFC4880</a>].
+   Hash function in counter mode.  The preferred implementation takes a
+   salt and passphrase as inputs, and is iterated.  In this mode a
+   configured hash function (e.g., SHA256).
+
+   Notes:
+
+
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 12]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-13" id="page-13" href="#page-13" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   o  The KDF does not match either the NIST KDF definitions or HKDF.
+
+
+<span class="h2"><a class="selflink" name="section-5" href="#section-5">5</a>.  Conclusions</span>
+
+   There are many KDF designs, and there is discouragingly little
+   compatibility between them.  Even where KDFs are similar, they most
+   often have incompatibilities that would prevent interoperability.  On
+   the positive side, it appears that there are many ways to design
+   adequately secure KDFs.
+
+   The most prevalent Internet key management protocols, IKE and TLS,
+   use their KDFs for both use cases #1 and #2.  This fact shows the
+   value of a multi-purpose KDF, such as HKDF.  Ideally, any KDF
+   designed for multi-purpose Internet use should be suitable for both
+   IKE and TLS.  (Interestingly, both IKE and TLS use HMAC as an
+   extractor, but IKE uses nonces as the HMAC key and the DH shared
+   secret as the "message" input, while TLS does the reverse.)
+
+   One potential demerit of a multi-purpose design is complexity.  The
+   benefit of using one KDF for two or three purposes could be negated
+   if the KDF was two or three times as complex as each of the single-
+   purpose KDFs that it is intended to replace.
+
+   In order to promote KDF reusability and agility, it may be worthwhile
+   to devise a standard interface between a KDF and a protocol.  Since
+   the complexity of a KDF increases as the number of its inputs
+   increases, any such standard should avoid the temptation to
+   proliferate inputs.  (Consider, for instance, the need to validate an
+   implementation across the range of admissible inputs.)
+
+   There are a great many KDFs designed for use in Diffie-Hellman
+   protocols (use case #2), all of which use hash functions, some in the
+   HMAC construction.
+
+   Any KDF suitable for use case #3 is likely to be suitable for use
+   case #2.  It could be valuable if the existing protocol-independent
+   KDFs that target use case #3 [<a href="#ref-SP800-90">SP800-90</a>] are found to be suitable for
+   use case #2.
+
+<span class="h3"><a class="selflink" name="section-5.1" href="#section-5.1">5.1</a>.  Future Work</span>
+
+   The importance of KDF security warrants more attention; it would be
+   useful to reference and summarize theoretical analyses of
+
+   There are no standards that make use of statistical extractors,
+   though there have been a number of theoretical results in the area.
+   One promising approach is the use of statistical extractors for
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 13]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-14" id="page-14" href="#page-14" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+   Diffie-Hellman protocols, in which the extractor is tailored to the
+   specific mathematical group in which the DH protocol is operating.
+   For instance, an elliptic curve group would use a specific extractor,
+   and a particular group of integers modulo a prime would use a
+   different extractor.  To use this approach in a protocol, it would be
+   necessary to associate an extractor with a mathematical group;
+   extraction could be incorporated into the group-specific
+   computations.  There would still need to be an expand stage.  It may
+   be useful to add a statistical extractor to an existing protocol as
+   an additional step, in order to add robustness to the extraction
+   stage, while retaining the existing KDF.  In this scenario, the
+   existing KDF is relieved of meeting the security goals of use case
+   #2, and instead need only meet those of use case #1.
+
+   Further analysis of the KDFs referenced in this note would be useful.
+   For each of the KDFs referenced in this note, it would be good to
+   know
+
+   o  Under what conditions is it secure?  If it relies on a
+      computational assumption, what is that assumption?  If it relies
+      on a statistical extractor, what are the requirements of the
+      inputs of that extractor?
+
+   o  Are there test cases for the KDF?
+
+   o  If the KDF is used in a protocol or application, does that
+      protocol or application admit the replacement of the KDF?  If so,
+      what is its interface (does it take a "salt" input, for example).
+
+   There are more KDFs that could be analyzed and included in future
+   versions of this note, but we believe that analysis of these other
+   less-used KDFs would not change our conclusions.
+
+
+<span class="h2"><a class="selflink" name="section-6" href="#section-6">6</a>.  Security Considerations</span>
+
+   The KDF selected for use should meet or exceed the security
+   requirements of its particular usage.
+
+
+<span class="h2"><a class="selflink" name="section-7" href="#section-7">7</a>.  IANA Considerations</span>
+
+   This note has no actions for IANA.  This section should be removed by
+   the RFC editor before publication as an RFC.
+
+
+<span class="h2"><a class="selflink" name="section-8" href="#section-8">8</a>.  References</span>
+
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 14]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-15" id="page-15" href="#page-15" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+<span class="h3"><a class="selflink" name="section-8.1" href="#section-8.1">8.1</a>.  Normative References</span>
+
+   [<a name="ref-RFC2119" id="ref-RFC2119">RFC2119</a>]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", <a href="./bcp14">BCP 14</a>, <a href="./rfc2119">RFC 2119</a>, March 1997.
+
+<span class="h3"><a class="selflink" name="section-8.2" href="#section-8.2">8.2</a>.  Informative References</span>
+
+   [<a name="ref-I-D.ietf-avt-dtls-srtp" id="ref-I-D.ietf-avt-dtls-srtp">I-D.ietf-avt-dtls-srtp</a>]
+              McGrew, D. and E. Rescorla, "Datagram Transport Layer
+              Security (DTLS) Extension to Establish Keys for  Secure
+              Real-time Transport Protocol (SRTP)",
+              <a href="./draft-ietf-avt-dtls-srtp-03">draft-ietf-avt-dtls-srtp-03</a> (work in progress), July 2008.
+
+   [<a name="ref-I-D.krawczyk-hkdf" id="ref-I-D.krawczyk-hkdf">I-D.krawczyk-hkdf</a>]
+              Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
+              Key Derivation Function (HKDF)", <a href="./draft-krawczyk-hkdf-01">draft-krawczyk-hkdf-01</a>
+              (work in progress), January 2010.
+
+   [<a name="ref-IEEE1363" id="ref-IEEE1363">IEEE1363</a>]
+              "IEEE Standard Specifications for Public-Key
+              Cryptography", IEEE Std 1363-2000 , January 2000.
+
+   [<a name="ref-IEEE1363a" id="ref-IEEE1363a">IEEE1363a</a>]
+              "IEEE Standard Specifications for Public-Key Cryptography
+              - Amendment 1: Additional Techniques", IEEE Std 1363a-
+              2004 , March 2004.
+
+   [<a name="ref-ISO-18033-2" id="ref-ISO-18033-2">ISO-18033-2</a>]
+              "Information technology -- Security techniques --
+              Encryption algorithms -- Part 2: Asymmetric ciphers",
+              International Organization for Standardization , May 2006.
+
+   [<a name="ref-RFC2409" id="ref-RFC2409">RFC2409</a>]  Harkins, D. and D. Carrel, "The Internet Key Exchange
+              (IKE)", <a href="./rfc2409">RFC 2409</a>, November 1998.
+
+   [<a name="ref-RFC2898" id="ref-RFC2898">RFC2898</a>]  Kaliski, B., "PKCS #5: Password-Based Cryptography
+              Specification Version 2.0", <a href="./rfc2898">RFC 2898</a>, September 2000.
+
+   [<a name="ref-RFC3711" id="ref-RFC3711">RFC3711</a>]  Baugher, M., McGrew, D., Naslund, M., Carrara, E., and K.
+              Norrman, "The Secure Real-time Transport Protocol (SRTP)",
+              <a href="./rfc3711">RFC 3711</a>, March 2004.
+
+   [<a name="ref-RFC3770" id="ref-RFC3770">RFC3770</a>]  Housley, R. and T. Moore, "Certificate Extensions and
+              Attributes Supporting Authentication in Point-to-Point
+              Protocol (PPP) and Wireless Local Area Networks (WLAN)",
+              <a href="./rfc3770">RFC 3770</a>, May 2004.
+
+   [<a name="ref-RFC3962" id="ref-RFC3962">RFC3962</a>]  Raeburn, K., "Advanced Encryption Standard (AES)
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 15]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-16" id="page-16" href="#page-16" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+              Encryption for Kerberos 5", <a href="./rfc3962">RFC 3962</a>, February 2005.
+
+   [<a name="ref-RFC4253" id="ref-RFC4253">RFC4253</a>]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
+              Transport Layer Protocol", <a href="./rfc4253">RFC 4253</a>, January 2006.
+
+   [<a name="ref-RFC4306" id="ref-RFC4306">RFC4306</a>]  Kaufman, C., "Internet Key Exchange (IKEv2) Protocol",
+              <a href="./rfc4306">RFC 4306</a>, December 2005.
+
+   [<a name="ref-RFC4346" id="ref-RFC4346">RFC4346</a>]  Dierks, T. and E. Rescorla, "The Transport Layer Security
+              (TLS) Protocol Version 1.1", <a href="./rfc4346">RFC 4346</a>, April 2006.
+
+   [<a name="ref-RFC4402" id="ref-RFC4402">RFC4402</a>]  Williams, N., "A Pseudo-Random Function (PRF) for the
+              Kerberos V Generic Security Service Application Program
+              Interface (GSS-API) Mechanism", <a href="./rfc4402">RFC 4402</a>, February 2006.
+
+   [<a name="ref-RFC4615" id="ref-RFC4615">RFC4615</a>]  Song, J., Poovendran, R., Lee, J., and T. Iwata, "The
+              Advanced Encryption Standard-Cipher-based Message
+              Authentication Code-Pseudo-Random Function-128 (AES-CMAC-
+              PRF-128) Algorithm for the Internet Key Exchange Protocol
+              (IKE)", <a href="./rfc4615">RFC 4615</a>, August 2006.
+
+   [<a name="ref-RFC4880" id="ref-RFC4880">RFC4880</a>]  Callas, J., Donnerhacke, L., Finney, H., Shaw, D., and R.
+              Thayer, "OpenPGP Message Format", <a href="./rfc4880">RFC 4880</a>, November 2007.
+
+   [<a name="ref-RFC5246" id="ref-RFC5246">RFC5246</a>]  Dierks, T. and E. Rescorla, "The Transport Layer Security
+              (TLS) Protocol Version 1.2", <a href="./rfc5246">RFC 5246</a>, August 2008.
+
+   [<a name="ref-RFC5754" id="ref-RFC5754">RFC5754</a>]  Turner, S., "Using SHA2 Algorithms with Cryptographic
+              Message Syntax", <a href="./rfc5754">RFC 5754</a>, January 2010.
+
+   [<a name="ref-SP800-108" id="ref-SP800-108">SP800-108</a>]
+              Chen, L., "Special Publication 800-108: Recommendation for
+              Key Derivation Using Pseudorandom Functions", U.S.
+              National Institute of  Standards and Technology (NIST)
+              Special Publication (SP) 800-108, 2008, &lt;<a href="http://csrc.nist.gov/publications/nistpubs/800-108/sp800-108.pdf">http://</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-108/sp800-108.pdf">csrc.nist.gov/publications/nistpubs/800-108/</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-108/sp800-108.pdf">sp800-108.pdf</a>&gt;.
+
+   [<a name="ref-SP800-56A" id="ref-SP800-56A">SP800-56A</a>]
+              Barker, E., Johnson, D., and M. Smid, "Special Publication
+              800-56A: Recommendation for Pair-Wise Key Establishment
+              Schemes Using Discrete Logarithm Cryptography (Revised)",
+              U.S. National Institute of Standards and Technology (NIST)
+              Special Publication (SP) 800-56A, &lt;<a href="http://csrc.nist.gov/publications/nistpubs/800-56A/SP800-56A_Revision1_Mar08-2007.pd">http://csrc.nist.gov/</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-56A/SP800-56A_Revision1_Mar08-2007.pd">publications/nistpubs/800-56A/</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-56A/SP800-56A_Revision1_Mar08-2007.pd">SP800-56A_Revision1_Mar08-2007.pd</a>&gt;.
+
+   [<a name="ref-SP800-90" id="ref-SP800-90">SP800-90</a>]
+
+
+
+<span class="grey">McGrew &amp; Weis            Expires August 30, 2010               [Page 16]</span></pre>
+<hr class='noprint' style='width: 96ex;' align='left'/><!--NewPage--><pre class='newpage'><a name="page-17" id="page-17" href="#page-17" class="invisible"> </a>
+<span class="grey">Internet-Draft             KDFs and their Uses             February 2010</span>
+
+
+              Barker, E. and J. Kelsey, "Special Publication 800-90:
+              Recommendation for Random Number Generation Using
+              Deterministic Random Bit Generators (Revised)", U.S.
+              National Institute of  Standards and Technology (NIST)
+              Special Publication (SP) 800-90, 2007, &lt;<a href="http://csrc.nist.gov/publications/nistpubs/800-90/SP800-90revised_March2007.pdf">http://</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-90/SP800-90revised_March2007.pdf">csrc.nist.gov/publications/nistpubs/800-90/</a>
+              <a href="http://csrc.nist.gov/publications/nistpubs/800-90/SP800-90revised_March2007.pdf">SP800-90revised_March2007.pdf</a>&gt;.
+
+   [<a name="ref-X9.42" id="ref-X9.42">X9.42</a>]    "Public Key Cryptography for the Financial Services
+              Industry: Agreement of Symmetric Keys Using Discrete
+              Logarithm Cryptography", American National Standard for
+              Financial Services , November 2003.
+
+   [<a name="ref-X9.63" id="ref-X9.63">X9.63</a>]    "Public Key Cryptography for the Financial Services
+              Industry Key Agreement and Key Transport Using Elliptic
+              Curve Cryptography", American National Standard for
+              Financial Services , November 2001.
+
+
+Authors' Addresses
+
+   David A. McGrew
+   Cisco Systems
+   510 McCarthy Blvd.
+   Milpitas, CA  95035
+   USA
+
+   Phone: (408) 525 8651
+   Email: mcgrew@cisco.com
+   URI:   <a href="http://www.mindspring.com/~dmcgrew/dam.htm">http://www.mindspring.com/~dmcgrew/dam.htm</a>
+
+
+   Brian Weis
+   Cisco Systems
+   510 McCarthy Blvd.
+   Milpitas, CA  95035
+   USA
+
+   Phone: (408) 526 4796
+   Email: bew@cisco.com
+
+
+
+
+
+
+
+
+
+
+
+McGrew &amp; Weis            Expires August 30, 2010               [Page 17]
+
+</pre><br />
+    <span class="noprint"><small><small>Html markup produced by rfcmarkup 1.120, available from
+      <a href="https://tools.ietf.org/tools/rfcmarkup/">https://tools.ietf.org/tools/rfcmarkup/</a>
+    </small></small></span>
+  </div>
+</body>
+</html>
